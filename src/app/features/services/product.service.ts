@@ -2,22 +2,6 @@ import { Injectable, signal } from '@angular/core';
 import { Product } from '../../models/product.interface';
 import { defer, delay, finalize, map, Observable, of, timer } from 'rxjs';
 
-// const MockProducts: Product[]=[
-//   { id: 1, title: 'iPhone 15', description: 'Apple smartphone', price: 999, category: 'electronics', image: 'https://picsum.photos/seed/1/200' },
-//   { id: 2, title: 'Galaxy S24', description: 'Samsung smartphone', price: 899, category: 'electronics', image: 'https://picsum.photos/seed/2/200' },
-//   { id: 3, title: 'Sony Headphones', description: 'Noise cancelling', price: 349, category: 'electronics', image: 'https://picsum.photos/seed/3/200' },
-//   { id: 4, title: 'Running Shoes', description: 'Lightweight shoes', price: 120, category: 'fashion', image: 'https://picsum.photos/seed/4/200' },
-//   { id: 5, title: 'Leather Jacket', description: 'Genuine leather', price: 250, category: 'fashion', image: 'https://picsum.photos/seed/5/200' },
-//   { id: 6, title: 'Denim Jeans', description: 'Classic fit', price: 80, category: 'fashion', image: 'https://picsum.photos/seed/6/200' },
-//   { id: 7, title: 'Coffee Maker', description: 'Automatic drip', price: 70, category: 'home', image: 'https://picsum.photos/seed/7/200' },
-//   { id: 8, title: 'Desk Lamp', description: 'LED adjustable', price: 35, category: 'home', image: 'https://picsum.photos/seed/8/200' },
-//   { id: 9, title: 'JavaScript Book', description: 'Learn JS deeply', price: 40, category: 'books', image: 'https://picsum.photos/seed/9/200' },
-//   { id: 10, title: 'Angular Handbook', description: 'Master Angular', price: 45, category: 'books', image: 'https://picsum.photos/seed/10/200' },
-// ]
-
-
-
-
 
 @Injectable({
   providedIn: 'root',
@@ -65,10 +49,5 @@ failNextRequests(n: number) {
     })
   }
 
-
-  //   getCategories(): Observable<string[]> {
-  //   const categories = [...new Set(MockProducts.map(p => p.category))];
-  //   return of(categories).pipe(delay(200));
-  // }
 
 }
