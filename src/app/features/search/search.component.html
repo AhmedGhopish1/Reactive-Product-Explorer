@@ -1,0 +1,210 @@
+
+<div class="min-h-screen bg-slate-50">
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-5 py-5 flex justify-between items-center">
+      <a href="#" class="text-2xl font-bold text-slate-900">
+        Shop<span class="text-indigo-600">ly.</span>
+      </a>
+
+      <p class="text-sm text-slate-600">
+        Your favorite products,
+        <span class="text-indigo-600">all in one place.</span>
+      </p>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-5 py-10">
+    <!-- Heading -->
+    <section class="mb-8">
+      <p class="text-sm font-semibold text-indigo-600 mb-2">Discover our collection</p>
+
+      <h1 class="text-3xl font-bold text-slate-900">Explore Products</h1>
+
+      <p class="text-slate-500 mt-3">
+        Find exactly what you're looking for from our wide range of products.
+      </p>
+    </section>
+
+    <!-- Search & Filters -->
+    <section class="bg-white border border-slate-200 rounded-2xl p-5 mb-8">
+      <div class="flex flex-wrap gap-4">
+        <!-- Search -->
+        <div class="flex-1 min-w-60">
+          <label class="block text-sm font-semibold text-slate-700 mb-2"> Search products </label>
+
+          <input
+            #serchInput
+            type="search"
+            placeholder="Search by product title..."
+            class="w-full border border-slate-200 rounded-xl bg-slate-50 p-3 outline-none focus:border-indigo-500"
+            [value]="query()"
+            (input)="query.set(serchInput.value)"
+          />
+
+          @if (state().status === 'initial') {
+            <p class="text-sm text-slate-500 mt-2">Enter Search key</p>
+          }
+        </div>
+        @let current = state();
+
+        <!-- Category -->
+       
+          <div class="flex-1 min-w-40">
+            <label class="block text-sm font-semibold text-slate-700 mb-2"> Category </label>
+
+            <select
+              #categorySelect
+              [value]="effectiveCategory()"
+              (change)="selectedCategory.set(categorySelect.value)"
+              class="w-full border border-slate-200 rounded-xl bg-slate-50 p-3"
+            >
+              @if(showProducts()==true){
+                <option value="">All categories</option>    
+                @for (category of dynamiCategories(); track category) {
+                <option [value]="category">{{ category }}</option>
+              }
+              }
+              @else {
+                 <option >No categories matches</option>
+              }
+            </select>
+          </div>
+        
+
+        <!-- Sorting -->
+        <div class="flex-1 min-w-40">
+          <label class="block text-sm font-semibold text-slate-700 mb-2"> Sort by </label>
+
+          <select
+          #sortSelect
+          [value]="selectedSort()"
+          (change)="onSortChange(sortSelect.value)"
+          class="w-full border border-slate-200 rounded-xl bg-slate-50 p-3">
+            <option value="default">Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-AtoZ">Name: A to Z</option>
+            <option value="name-ZtoA">Name: Z to A</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Filter Summary -->
+      <div
+        class="flex justify-between items-center flex-wrap gap-3 border-t border-slate-100 pt-4 mt-4"
+      >
+        <p class="text-sm text-slate-500">
+          Showing
+            {{productCount()}}
+          products
+        </p>
+
+        <button type="button" class="text-sm font-semibold text-indigo-600" (click)="clearFilters()">
+          Reset filters
+        </button>
+      </div>
+    </section>
+
+    <button
+      type="button"
+      (click)="simulateFailureOnce()"
+      class="bg-indigo-600 text-white px-4 py-2 rounded-lg mb-5"
+    >
+      Make next request fail
+    </button>
+
+    <!-- Products -->
+    <section>
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-xl font-bold text-slate-900">Our Products</h2>
+        <span class="text-sm text-slate-400">Explore collection</span>
+      </div>
+
+
+      @if (showProducts()) {
+        @if (noMatchesAfterFilter()) {
+          <p class="text-slate-500">No products match the selected category.</p>
+        } @else {
+          <div class="flex flex-wrap gap-2">
+            @for (p of visibleProducts(); track p.id) {
+              <div
+                class="bg-white rounded-2xl border border-slate-100 overflow-hidden w-full sm:w-72 my-1"
+              >
+                <img [src]="p.image" [alt]="p.title" class="w-full h-52 object-cover" />
+
+                <div class="p-4">
+                  <h3 class="font-semibold text-gray-900">
+                    {{ p.title }}
+                  </h3>
+
+                  <p class="text-sm text-gray-500 mt-2">
+                    {{ p.description }}
+                  </p>
+
+                  <p class="text-lg font-bold text-indigo-600 mt-3">${{ p.price }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      } @else {
+        @switch (current.status) {
+          @case ('loading') {
+              <div class="flex justify-center items-center min-h-80">
+            <p class="text-slate-500">Loading products...</p>
+          </div>
+          }
+          @case ('empty') {
+                   <div class="min-h-80 flex flex-col justify-center items-center text-center px-4">
+
+            <div class="bg-gray-100 rounded-2xl p-4 mb-4">
+              <span class="text-3xl">📦</span>
+            </div>
+
+            <h2 class="text-xl font-semibold text-gray-900">
+              No products found
+            </h2>
+
+            <p class="text-sm text-gray-500 mt-2 max-w-sm">
+              We couldn't find any products matching your search.
+              Try changing your filters or search again.
+            </p>
+
+            <button
+              type="button"
+              (click)="query.set('')"
+              class="mt-5 border border-gray-300 px-5 py-2 rounded-lg text-sm text-gray-700"
+            >
+              Clear filters
+            </button>
+
+          </div>
+          }
+          @case ('error') {
+            <div class="min-h-80 flex flex-col justify-center items-center text-center">
+
+            <h2 class="text-xl font-semibold text-gray-900">
+              Something went wrong!
+            </h2>
+
+            <p class="text-sm text-gray-500 mt-2">
+              {{ current.message }}
+            </p>
+
+            <button
+              (click)="retryCount.update(n => n + 1)"
+              class="mt-5 bg-indigo-600 text-white px-5 py-2 rounded-lg"
+            >
+              Try again
+            </button>
+
+          </div>
+          }
+        }
+      }
+    </section>
+  </main>
+</div>
+
+
